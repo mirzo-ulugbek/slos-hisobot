@@ -109,12 +109,14 @@
       const scriptURL = 'https://script.google.com/macros/s/AKfycbwByE9m7hKrpWNvF6jEMBSFXoQZ1Xq133wxRRNJGTcVDU1JSWr1pyb9RRDy1eosYMEjBQ/exec';
 
       fetch(scriptURL, {
-        method: 'POST',
-        body: JSON.stringify(data),
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
+  method: 'POST',
+  mode: 'no-cors',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify(item)
+});
+
       .then(res => res.text())
       .then(response => {
         alert("✅ Google Sheets’ga muvaffaqiyatli saqlandi!");
