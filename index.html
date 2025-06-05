@@ -91,42 +91,39 @@
     }
 
     function saveData() {
-      const rows = document.querySelectorAll('#table-body tr');
-      const data = [];
+  const rows = document.querySelectorAll('#table-body tr');
+  const data = [];
 
-      rows.forEach(row => {
-        const inputs = row.querySelectorAll('input');
-        data.push({
-          plate: inputs[0].value,
-          date: inputs[1].value,
-          qop: inputs[2].value,
-          kg: inputs[3].value,
-          price: inputs[4].value
-        });
-      });
+  rows.forEach(row => {
+    const inputs = row.querySelectorAll('input');
+    data.push({
+      plate: inputs[0].value,
+      date: inputs[1].value,
+      qop: inputs[2].value,
+      kg: inputs[3].value,
+      price: inputs[4].value
+    });
+  });
 
-      // ⬇️ BU YERGA O'Z SCRIPTINGIZNING WEB-URL MANZILINI QO'YING
-      const scriptURL = 'https://script.google.com/macros/s/AKfycbxPJGglpTDfjkjtwhdSSdkAQKm1qRsgVDy0p17GKTwamdIGo9_RkRCckRtsPkSMVWHYHg/exec';
+  const scriptURL = 'https://script.google.com/macros/s/AKfycbxPJGglpTDfjkjtwhdSSdkAQKm1qRsgVDy0p17GKTwamdIGo9_RkRCckRtsPkSMVWHYHg/exec';
 
-      fetch(scriptURL, {
-  method: 'POST',
-  mode: 'no-cors',
-  headers: {
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify(item)
-});
+  fetch(scriptURL, {
+    method: 'POST',
+    mode: 'no-cors', // Bu holatda javob olmaydi, lekin serverga ketadi
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data) // << TO‘G‘RILANGAN
+  })
+  .then(() => {
+    alert("✅ Google Sheets’ga muvaffaqiyatli saqlandi!");
+  })
+  .catch(err => {
+    console.error('Xatolik:', err);
+    alert("❌ Xatolik yuz berdi: " + err);
+  });
+}
 
-      .then(res => res.text())
-      .then(response => {
-        alert("✅ Google Sheets’ga muvaffaqiyatli saqlandi!");
-        console.log(response);
-      })
-      .catch(err => {
-        console.error('Xatolik:', err);
-        alert("❌ Xatolik yuz berdi: " + err);
-      });
-    }
 
     function clearData() {
       if (confirm("Haqiqatan ham hamma ma'lumotlarni o'chirmoqchimisiz?")) {
