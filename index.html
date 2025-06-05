@@ -30,8 +30,7 @@
         <th>Jami Narx</th>
       </tr>
     </thead>
-    <tbody id="table-body">
-    </tbody>
+    <tbody id="table-body"></tbody>
     <tfoot>
       <tr>
         <td colspan="4">Jami</td>
@@ -44,27 +43,30 @@
   </table>
 
   <button onclick="addRow()">Yangi Qator Qo‘shish</button>
+  <button onclick="saveData()">💾 Saqlash</button>
+  <button onclick="clearData()">🗑 Tozalash</button>
 
   <script>
     let rowCount = 0;
 
-    function addRow() {
+    function addRow(data = {}) {
       rowCount++;
       const tbody = document.getElementById('table-body');
       const row = document.createElement('tr');
 
       row.innerHTML = `
         <td>${rowCount}</td>
-        <td><input type="text" onchange="updateTotals()"></td>
-        <td><input type="text" onchange="updateTotals()"></td>
-        <td><input type="date" onchange="updateTotals()"></td>
-        <td><input type="number" value="0" onchange="updateTotals()"></td>
-        <td><input type="number" step="0.01" value="0" onchange="updateTotals()"></td>
-        <td><input type="number" step="1000" value="0" onchange="updateTotals()"></td>
+        <td><input type="text" value="${data.plate || ''}" onchange="updateTotals()"></td>
+        <td><input type="text" value="${data.name || ''}" onchange="updateTotals()"></td>
+        <td><input type="date" value="${data.date || ''}" onchange="updateTotals()"></td>
+        <td><input type="number" value="${data.qop || 0}" onchange="updateTotals()"></td>
+        <td><input type="number" step="0.01" value="${data.kg || 0}" onchange="updateTotals()"></td>
+        <td><input type="number" step="1000" value="${data.price || 0}" onchange="updateTotals()"></td>
         <td class="sum-cell">0</td>
       `;
 
       tbody.appendChild(row);
+      updateTotals();
     }
 
     function updateTotals() {
@@ -88,6 +90,43 @@
       document.getElementById('total-kg').textContent = totalKg.toFixed(2);
       document.getElementById('total-sum').textContent = totalSum.toFixed(2);
     }
+
+    function saveData() {
+      const rows = document.querySelectorAll('#table-body tr');
+      const data = [];
+
+      rows.forEach(row => {
+        const inputs = row.querySelectorAll('input');
+        data.push({
+          plate: inputs[0].value,
+          name: inputs[1].value,
+          date: inputs[2].value,
+          qop: inputs[3].value,
+          kg: inputs[4].value,
+          price: inputs[5].value
+        });
+      });
+
+      localStorage.setItem('slosData', JSON.stringify(data));
+      alert("✅ Ma'lumotlar saqlandi!");
+    }
+
+    function loadData() {
+      const data = JSON.parse(localStorage.getItem('slosData') || "[]");
+      data.forEach(row => addRow(row));
+    }
+
+    function clearData() {
+      if (confirm("Haqiqatan ham hamma ma'lumotlarni o'chirmoqchimisiz?")) {
+        localStorage.removeItem('slosData');
+        document.getElementById('table-body').innerHTML = '';
+        rowCount = 0;
+        updateTotals();
+      }
+    }
+
+    // Avtomatik yuklash
+    window.onload = loadData;
   </script>
 
 </body>
