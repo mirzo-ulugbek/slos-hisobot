@@ -108,13 +108,14 @@
   const scriptURL = 'https://script.google.com/macros/s/AKfycbwUMeH-859TqkU6Y5JBkscxZdB80-HoFcAV8IOHW_bDKB5tHl9c7Trpm_33tcbdNB2E8Q/exec';
 
   fetch(scriptURL, {
-    method: 'POST',
-    mode: 'no-cors', // Bu holatda javob olmaydi, lekin serverga ketadi
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(data) // << TO‘G‘RILANGAN
-  })
+  method: 'POST',
+  mode: 'no-cors',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify(item)
+});
+
   .then(() => {
     alert("✅ Google Sheets’ga muvaffaqiyatli saqlandi!");
   })
