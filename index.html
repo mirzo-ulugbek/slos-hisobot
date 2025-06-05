@@ -43,7 +43,7 @@
   </table>
 
   <button onclick="addRow()">Yangi Qator Qo‘shish</button>
-  <button onclick="saveData()">💾 Saqlash</button>
+  <button onclick="saveData()">💾 Google Sheets’ga Saqlash</button>
   <button onclick="clearData()" id="clear-btn">🗑 Tozalash</button>
 
   <script>
@@ -105,25 +105,39 @@
         });
       });
 
-      localStorage.setItem('slosData', JSON.stringify(data));
-      alert("✅ Ma'lumotlar saqlandi!");
-    }
+      // ⬇️ BU YERGA O'Z SCRIPTINGIZNING WEB-URL MANZILINI QO'YING
+      const scriptURL = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec';
 
-    function loadData() {
-      const data = JSON.parse(localStorage.getItem('slosData') || "[]");
-      data.forEach(row => addRow(row));
+      fetch(scriptURL, {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(res => res.text())
+      .then(response => {
+        alert("✅ Google Sheets’ga muvaffaqiyatli saqlandi!");
+        console.log(response);
+      })
+      .catch(err => {
+        console.error('Xatolik:', err);
+        alert("❌ Xatolik yuz berdi: " + err);
+      });
     }
 
     function clearData() {
       if (confirm("Haqiqatan ham hamma ma'lumotlarni o'chirmoqchimisiz?")) {
-        localStorage.removeItem('slosData');
         document.getElementById('table-body').innerHTML = '';
         rowCount = 0;
         updateTotals();
       }
     }
 
-    window.onload = loadData;
+    window.onload = () => {
+      // Boshlanishida bo'sh qator qo‘shish
+      addRow();
+    };
   </script>
 
 </body>
